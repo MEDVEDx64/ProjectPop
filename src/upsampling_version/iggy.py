@@ -3,10 +3,10 @@ import os
 from sys import argv
 from uuid import uuid4
 
-SRCD = 'r:/src'
-HEVCD = 'r:/hevc'
-XD = 'e:/dataset/x'
-YD = 'e:/dataset/y'
+SRCD = 'src'
+HEVCD = 'hevc'
+XD = 'dataset/x'
+YD = 'dataset/y'
 
 def space_destroyer(path):
     if ' ' in path:

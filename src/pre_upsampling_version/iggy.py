@@ -3,10 +3,10 @@ import os
 from sys import argv
 from uuid import uuid4
 
-SRCD = 'r:/src'
-HEVCD = 'r:/hevc'
-XD = 'e:/dataset/x'
-YD = 'e:/dataset/y'
+SRCD = 'src'
+HEVCD = 'hevc'
+XD = 'dataset/x'
+YD = 'dataset/y'
 
 def space_destroyer(path):
     if ' ' in path:
@@ -29,9 +29,7 @@ def chop_chop(path):
         return
 
     i = str(uuid4())
-    #os.system('ffmpeg -i ' + os.path.join(SRCD, path) + ' -ss 5.5 -t 11.4 -y ' + os.path.join(YD, i) + '_%09d.png')
     os.system('ffmpeg -i ' + os.path.join(SRCD, path) + ' -y ' + os.path.join(YD, i) + '_%09d.png')
-    #os.system('ffmpeg -i ' + hev_path + ' -ss 5.5 -t 11.4 -vf scale=1920:-1 -y ' + os.path.join(XD, i) + '_%09d.png')
     os.system('ffmpeg -i ' + hev_path + ' -vf scale=1920:-1 -y ' + os.path.join(XD, i) + '_%09d.png')
 
 def cook_frames():

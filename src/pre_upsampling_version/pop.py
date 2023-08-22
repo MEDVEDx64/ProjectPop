@@ -10,7 +10,7 @@ from sys import argv
 
 POP_MODEL = 'pop.h5'
 POP_DB = 'pop.db'
-DATASET = 'e:/dataset'
+DATASET = 'dataset'
 
 def load_img(path):
     return numpy.array([(imread(path)/255).astype(numpy.float32)])
