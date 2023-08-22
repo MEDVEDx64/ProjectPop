@@ -34,6 +34,8 @@ def train(model):
     fln = len(files)
 
     with sqlite3.connect(POP_DB) as con:
+        (n,) = con.cursor().execute('SELECT COUNT(*) FROM checked').fetchone()
+
         for f in files:
             n += 1
 
