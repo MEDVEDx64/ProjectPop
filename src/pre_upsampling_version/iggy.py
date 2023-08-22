@@ -8,6 +8,10 @@ HEVCD = 'hevc'
 XD = 'dataset/x'
 YD = 'dataset/y'
 
+# Handle input videos as Play of Game's exported from OW.
+# Intro and outro parts will be omitted.
+POG_MODE = True
+
 def space_destroyer(path):
     if ' ' in path:
         os.rename(path, path.replace(' ', '_'))
@@ -29,8 +33,13 @@ def chop_chop(path):
         return
 
     i = str(uuid4())
-    os.system('ffmpeg -i ' + os.path.join(SRCD, path) + ' -y ' + os.path.join(YD, i) + '_%09d.png')
-    os.system('ffmpeg -i ' + hev_path + ' -vf scale=1920:-1 -y ' + os.path.join(XD, i) + '_%09d.png')
+
+    if POG_MODE:
+        os.system('ffmpeg -i ' + os.path.join(SRCD, path) + ' -ss 5.5 -t 11.4 -y ' + os.path.join(YD, i) + '_%09d.png')
+        os.system('ffmpeg -i ' + hev_path + ' -ss 5.5 -t 11.4 -vf scale=1920:-1 -y ' + os.path.join(XD, i) + '_%09d.png')
+    else:
+        os.system('ffmpeg -i ' + os.path.join(SRCD, path) + ' -y ' + os.path.join(YD, i) + '_%09d.png')
+        os.system('ffmpeg -i ' + hev_path + ' -vf scale=1920:-1 -y ' + os.path.join(XD, i) + '_%09d.png')
 
 def cook_frames():
     files = os.listdir(SRCD)
