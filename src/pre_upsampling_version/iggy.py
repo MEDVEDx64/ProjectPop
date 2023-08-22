@@ -18,7 +18,7 @@ def space_destroyer(path):
 
 def make_it_hevc(path):
     path = path.replace(' ', '_')
-    os.system('ffmpeg -i ' + os.path.join(SRCD, path) + ' -an -vf scale=1280:-1 -crf 24 -c:v libx265 -y ' + os.path.join(HEVCD, path))
+    os.system('ffmpeg -i ' + os.path.join(SRCD, path) + ' -an -vf scale=1024:-1 -crf 26 -c:v libx265 -y ' + os.path.join(HEVCD, path))
 
 def go_thru_files():
     files = os.listdir(SRCD)
