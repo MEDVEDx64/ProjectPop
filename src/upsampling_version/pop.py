@@ -101,10 +101,16 @@ def predict():
         save_img(os.path.join('out', f), model.predict(load_img(os.path.join('in', f))))
 
 def main():
+    if len(argv) < 2:
+        print('subcommands are: train, predict')
+        return
+
     if argv[1] == 'train':
         create()
     elif argv[1] == 'predict':
         predict()
+    else:
+        print('???')
 
 if __name__ == '__main__':
     main()
