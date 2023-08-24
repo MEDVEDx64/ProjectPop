@@ -8,13 +8,17 @@ HEVCD = 'hevc'
 XD = 'dataset/x'
 YD = 'dataset/y'
 
+# Handle input videos as Play of Game's exported from OW.
+# Intro and outro parts will be omitted.
+POG_MODE = True
+
 def space_destroyer(path):
     if ' ' in path:
         os.rename(path, path.replace(' ', '_'))
 
 def make_it_hevc(path):
     path = path.replace(' ', '_')
-    os.system('ffmpeg -i ' + os.path.join(SRCD, path) + ' -an -vf scale=1024:-1 -crf 26 -c:v libx265 -y ' + os.path.join(HEVCD, path))
+    os.system('ffmpeg -i ' + os.path.join(SRCD, path) + ' -an -vf scale=960:-1 -crf 26 -c:v libx265 -y ' + os.path.join(HEVCD, path))
 
 def go_thru_files():
     files = os.listdir(SRCD)
@@ -29,8 +33,12 @@ def chop_chop(path):
         return
 
     i = str(uuid4())
-    os.system('ffmpeg -i ' + os.path.join(SRCD, path) + ' -ss 5.5 -t 11.4 -y ' + os.path.join(YD, i) + '_%09d.png')
-    os.system('ffmpeg -i ' + hev_path + ' -ss 5.5 -t 11.4 -vf scale=960:540 -y ' + os.path.join(XD, i) + '_%09d.png')
+    if POG_MODE:
+        os.system('ffmpeg -i ' + os.path.join(SRCD, path) + ' -ss 5.5 -t 11.4 -y ' + os.path.join(YD, i) + '_%09d.png')
+        os.system('ffmpeg -i ' + hev_path + ' -ss 5.5 -t 11.4 -y ' + os.path.join(XD, i) + '_%09d.png')
+    else:
+        os.system('ffmpeg -i ' + os.path.join(SRCD, path) + ' -y ' + os.path.join(YD, i) + '_%09d.png')
+        os.system('ffmpeg -i ' + hev_path + ' -y ' + os.path.join(XD, i) + '_%09d.png')
 
 def cook_frames():
     files = os.listdir(SRCD)
