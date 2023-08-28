@@ -2,7 +2,7 @@ import sqlite3
 import numpy
 import os
 
-from keras.layers import Input, Conv2D, UpSampling2D, SpatialDropout2D
+from keras.layers import Input, Conv2D, UpSampling2D
 from keras.models import Model, load_model
 from imageio.v3 import imread, imwrite
 from random import shuffle
@@ -37,36 +37,43 @@ def train(model):
         (n,) = con.cursor().execute('SELECT COUNT(*) FROM checked').fetchone()
 
         for f in files:
-            n += 1
-
-            res = con.cursor().execute('SELECT n FROM checked WHERE n = ?', (f,))
-            if res.fetchone():
-                continue
-
-            print(str(n) + ' / ' + str(fln))
-
             try:
-                model.fit(load(False, f), load(True, f))
+                n += 1
+
+                res = con.cursor().execute('SELECT n FROM checked WHERE n = ?', (f,))
+                if res.fetchone():
+                    continue
+
+                print(str(n) + ' / ' + str(fln))
+
+                try:
+                    model.fit(load(False, f), load(True, f))
+                except KeyboardInterrupt:
+                    raise
+                except:
+                    print('Training error at sample #' + str(n))
+                    #raise
+                    continue
+            
+                con.cursor().execute('INSERT INTO checked VALUES(?)', (f,))
+                model.save(POP_MODEL)
+
             except KeyboardInterrupt:
                 print('HALT!')
-                return
-            except:
-                print('Training error at sample #' + str(n))
-                #raise
-                continue
+                try:
+                    model.save(POP_MODEL)
+                except KeyboardInterrupt:
+                    pass
 
-            con.cursor().execute('INSERT INTO checked VALUES(?)', (f,))
-            model.save('./pop.h5')
+                break
 
 def create_model():
     input_img = Input(shape=(540, 960, 3), dtype=numpy.float32)
 
-    x = Conv2D(384, (3, 3), activation='relu', padding='same')(input_img)
-    x = SpatialDropout2D(0.5)(x)
+    x = Conv2D(192, (3, 3), activation='relu', padding='same')(input_img)
     x = Conv2D(128, (3, 3), activation='relu', padding='same')(x)
     x = UpSampling2D((2, 2))(x)
     x = Conv2D(48, (3, 3), activation='relu', padding='same')(x)
-    x = SpatialDropout2D(0.5)(x)
     x = Conv2D(3, (3, 3), activation='sigmoid', padding='same')(x)
 
     model = Model(input_img, x)

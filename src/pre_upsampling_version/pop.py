@@ -37,26 +37,35 @@ def train(model):
         (n,) = con.cursor().execute('SELECT COUNT(*) FROM checked').fetchone()
 
         for f in files:
-            n += 1
-
-            res = con.cursor().execute('SELECT n FROM checked WHERE n = ?', (f,))
-            if res.fetchone():
-                continue
-
-            print(str(n) + ' / ' + str(fln))
-
             try:
-                model.fit(load(False, f), load(True, f))
+                n += 1
+
+                res = con.cursor().execute('SELECT n FROM checked WHERE n = ?', (f,))
+                if res.fetchone():
+                    continue
+
+                print(str(n) + ' / ' + str(fln))
+
+                try:
+                    model.fit(load(False, f), load(True, f))
+                except KeyboardInterrupt:
+                    raise
+                except:
+                    print('Training error at sample #' + str(n))
+                    #raise
+                    continue
+            
+                con.cursor().execute('INSERT INTO checked VALUES(?)', (f,))
+                model.save(POP_MODEL)
+
             except KeyboardInterrupt:
                 print('HALT!')
-                return
-            except:
-                print('Training error at sample #' + str(n))
-                #raise
-                continue
+                try:
+                    model.save(POP_MODEL)
+                except KeyboardInterrupt:
+                    pass
 
-            con.cursor().execute('INSERT INTO checked VALUES(?)', (f,))
-            model.save('./pop.h5')
+                break
 
 def create_model():
     input_img = Input(shape=(1080, 1920, 3), dtype=numpy.float32)
