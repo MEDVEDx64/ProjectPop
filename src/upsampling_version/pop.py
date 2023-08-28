@@ -78,7 +78,6 @@ def create_model():
 
     model = Model(input_img, x)
     model.compile(optimizer='adam', loss='mse')
-    model.summary()
 
     return model
 
@@ -89,6 +88,7 @@ def create():
         print('Existing model loaded')
     else:
         model = create_model()
+    model.summary()
 
     if not os.path.exists(POP_DB):
         with sqlite3.connect(POP_DB) as con:
