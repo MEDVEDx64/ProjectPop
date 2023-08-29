@@ -70,10 +70,10 @@ def train(model):
 def create_model():
     input_img = Input(shape=(1080, 1920, 3), dtype=numpy.float32)
 
-    x = Conv2D(128, (3, 3), activation='relu', padding='same')(input_img)
-    x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
-    x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
-    x = Conv2D(16, (3, 3), activation='relu', padding='same')(x)
+    x = Conv2D(120, (3, 3), activation='relu', padding='same')(input_img)
+    x = Conv2D(60, (3, 3), activation='relu', padding='same')(x)
+    x = Conv2D(30, (3, 3), activation='relu', padding='same')(x)
+    x = Conv2D(15, (3, 3), activation='relu', padding='same')(x)
     x = Conv2D(3, (3, 3), activation='sigmoid', padding='same')(x)
 
     model = Model(input_img, x)
