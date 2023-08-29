@@ -100,12 +100,28 @@ def predict():
     model = load_model(POP_MODEL)
     files = os.listdir('in')
     fln = len(files)
+    out_path = ''
     n = 0
 
     for f in files:
-        n += 1
-        print(str(n) + ' / ' + str(fln))
-        save_img(os.path.join('out', f), model.predict(load_img(os.path.join('in', f))))
+        try:
+            n += 1
+            out_path = os.path.join('out', f)
+            if os.path.exists(out_path):
+                continue
+
+            print(str(n) + ' / ' + str(fln))
+            save_img(out_path, model.predict(load_img(os.path.join('in', f))))
+
+        except KeyboardInterrupt:
+            print('HALT!')
+            try:
+                if os.path.exists(out_path):
+                    os.remove(out_path)
+            except KeyboardInterrupt:
+                pass
+
+            break
 
 def main():
     if len(argv) < 2:
