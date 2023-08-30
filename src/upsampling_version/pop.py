@@ -106,7 +106,7 @@ def predict():
     for f in files:
         try:
             n += 1
-            out_path = os.path.join('out', f)
+            out_path = os.path.join('out', f).replace('.png', '.tif')
             if os.path.exists(out_path):
                 continue
 
