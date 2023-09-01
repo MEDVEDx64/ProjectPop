@@ -1,0 +1,2 @@
+class FfmpegProcess(object):
+    pass
