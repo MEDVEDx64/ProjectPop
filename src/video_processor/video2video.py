@@ -21,7 +21,7 @@ def main():
         with ffmpeg.FfmpegReadingProcess(m.description, infile) as reader:
             with ffmpeg.FfmpegWritingProcess(m.description, outfile, ffmpeg.fetch_vfinfo(infile)) as writer:
                 def callback(bytes_: bytes):
-                    writer.push(unpack_frame(m.model.predict(create_frame(bytes_))))
+                    writer.push(unpack_frame(m.model.predict(create_frame(bytes_, m.description.input_dimensions))))
 
                 reader.run(callback)
 

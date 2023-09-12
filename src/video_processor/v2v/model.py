@@ -51,7 +51,7 @@ class ModelDescription(object):
     def __init__(self, dsc_path: str):
         with open(dsc_path, 'r') as f:
             dsc = json.load(f)
-            jsonschema.validate(dsc, self.SCHEMA)
+            #jsonschema.validate(dsc, self.SCHEMA)
             self.input_dimensions = (dsc['picture']['input']['width'],
                                      dsc['picture']['input']['height'])
             self.output_dimensions = (dsc['picture']['output']['width'],

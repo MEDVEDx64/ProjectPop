@@ -1,6 +1,6 @@
 import numpy
 
-def create_frame(bytes_: bytes, dimensions: (int, int)) -> numpy.ndarray:
+def create_frame(bytes_: bytes, dimensions) -> numpy.ndarray:
     w, h = dimensions
     array = numpy.array(bytes_).reshape((h, w, 3))
     return numpy.array([(array/255).astype(numpy.float32)])

@@ -41,7 +41,7 @@ class FfmpegWritingProcess(FfmpegProcess):
     def __enter__(self):
         return self
 
-    def __exit__(self):
+    def __exit__(self, exc_type, exc_value, traceback):
         self._process.terminate()
 
     def _build_args(self) -> list[str]:
@@ -59,7 +59,7 @@ class FfmpegWritingProcess(FfmpegProcess):
                 self._file_path]
 
     def push(self, data: bytes):
-        raise NotImplementedError()
+        self._process.stdin.write(data)
 
 
 class FfmpegReadingProcess(FfmpegProcess):
@@ -75,7 +75,7 @@ class FfmpegReadingProcess(FfmpegProcess):
     def __enter__(self):
         return self
 
-    def __exit__(self):
+    def __exit__(self, exc_type, exc_value, traceback):
         self._process.terminate()
 
     def _build_args(self) -> list[str]:
@@ -85,7 +85,7 @@ class FfmpegReadingProcess(FfmpegProcess):
                 '-vf', 'scale=' + str(w) + ':' + str(h),
                 '-f', 'rawvideo',
                 '-hide_banner',
-                '-loglevel', 'error'
+                '-loglevel', 'error',
                 'pipe:1'
                 ]
     
@@ -120,4 +120,4 @@ def fetch_vfinfo(file_path: str) -> VideoFileInfo:
     
     value = process.stdout.readline()
     process.terminate()
-    return value
+    return VideoFileInfo(value)
