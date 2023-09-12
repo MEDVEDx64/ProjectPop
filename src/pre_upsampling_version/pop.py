@@ -27,7 +27,7 @@ def load(y, n):
     return load_img(path)
 
 def train(model):
-    n = 0
+    n = 1
     print('Listing and shuffling...')
     files = os.listdir(os.path.join(DATASET, 'y'))
     shuffle(files)
@@ -38,8 +38,6 @@ def train(model):
 
         for f in files:
             try:
-                n += 1
-
                 res = con.cursor().execute('SELECT n FROM checked WHERE n = ?', (f,))
                 if res.fetchone():
                     continue
@@ -66,6 +64,8 @@ def train(model):
                     pass
 
                 break
+
+            n += 1
 
 def create_model():
     input_img = Input(shape=(1080, 1920, 3), dtype=numpy.float32)
