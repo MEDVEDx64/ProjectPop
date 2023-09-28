@@ -2,7 +2,7 @@ import numpy
 
 def create_frame(bytes_: bytes, dimensions) -> numpy.ndarray:
     w, h = dimensions
-    array = numpy.array(bytes_).reshape((h, w, 3))
+    array = numpy.reshape(bytearray(bytes_), (h, w, 3))
     return numpy.array([(array/255).astype(numpy.float32)])
 
 def unpack_frame(array: numpy.ndarray) -> bytes:

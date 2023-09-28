@@ -36,19 +36,23 @@ class FfmpegWritingProcess(FfmpegProcess):
         self._vfinfo = vfinfo
         self._stdin = subprocess.PIPE
 
-        self._process = subprocess.Popen(self._build_args())
+        self._process = subprocess.Popen(
+            self._build_args(),
+            stdin=self._stdin,
+            stdout=self._stdout)
 
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        self._process.terminate()
+        self._process.stdin.close()
+        self._process.wait()
 
     def _build_args(self) -> list[str]:
         w, h = self._model_desc.output_dimensions
         return [self.ffmpeg_path,
-                '-f', 'rawvideo'
-                '-pix_fmt', 'rgb8',
+                '-f', 'rawvideo',
+                '-pix_fmt', 'rgb24',
                 '-s:v', str(w) + 'x' + str(h),
                 '-r', self._vfinfo.framerate_frac,
                 '-i', '-',
@@ -56,6 +60,7 @@ class FfmpegWritingProcess(FfmpegProcess):
                 '-c:v', 'libsvtav1',
                 '-preset', '6',
                 '-crf', '28',
+                '-y',
                 self._file_path]
 
     def push(self, data: bytes):
@@ -81,7 +86,7 @@ class FfmpegReadingProcess(FfmpegProcess):
     def _build_args(self) -> list[str]:
         w, h = self._model_desc.input_dimensions
         return [self.ffmpeg_path, '-i', self._file_path,
-                '-an', '-pix_fmt', 'rgb8',
+                '-an', '-pix_fmt', 'rgb24',
                 '-vf', 'scale=' + str(w) + ':' + str(h),
                 '-f', 'rawvideo',
                 '-hide_banner',
