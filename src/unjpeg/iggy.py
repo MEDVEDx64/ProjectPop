@@ -24,6 +24,7 @@ def chop_chop(path):
     os.system('ffmpeg -i ' + src_path + ' -vf scale=1920:1080 -y -q 3 ' + os.path.join(XD, i) + '_%09d.jpg')
 
 def cook_frames():
+    go_thru_files()
     files = os.listdir(SRCD)
     for n in files:
         chop_chop(n)
